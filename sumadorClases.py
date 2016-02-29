@@ -6,6 +6,12 @@ import socket
 
 class Server:
     def parse(self,request):
+        """Root of a hierarchy of classes implementing web applications
+    This class does almost nothing. Usually, new classes will
+    inherit from it, and by redefining "parse" and "process" methods
+    will implement the logic of a web application in particular.
+    """
+
         return None
 
     def process (self , parsedRequest):
@@ -14,21 +20,30 @@ class Server:
 
         return (""HTTP/1.1 200 OK", "<html><body><h1>It works!</h1></body></html>")
 
+    def analyze (self , request) :
+        numero = peticion.split()[1][1:]
+        return numero
+
+    def sum (self , n1 , n2):
+        suma = n1 + n2
+        return suma
+
+
     def __init (self,hostname,port):
         """Initialize the application"""
 
- mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# Let the port be reused if no process is actually using it
-mySocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-# Bind to the address corresponding to the main name of the host
-mySocket.bind((hostname, port)) #ligar a IP y puerto
+        mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # Let the port be reused if no process is actually using it
+        mySocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        # Bind to the address corresponding to the main name of the host
+        mySocket.bind((hostname, port)) #ligar a IP y puerto
 
-# Queue a maximum of 5 TCP connection requests
-mySocket.listen(5)
+        # Queue a maximum of 5 TCP connection requests
+        mySocket.listen(5)
 
-primero = 'none'
-try:
-    while True:
+        primero = True
+
+        while True:
         print 'Waiting for connections'
         (recvSocket, address) = mySocket.accept()
         print 'Request received:'
@@ -37,47 +52,34 @@ try:
         parsedRequest = self.parse(peticion)
         (returnCode,htmlAnswer) = self.process.(parsedRequest)
         numero = self.analyze(peticion)
-            if (number == ''):
+            if (numero == ''):
                 return None
-            else (primero==True):
-                 
-        try :
-            print 'La peticion es : ' + peticion
-            numero = peticion.split()[1][1:]
-            print 'El numero a sumar es ' + numero
-            num = int(numero)
-        except ValueError:
-                print 'Pon un numero para continuar'
-                print ("Answering back :")
-                recvSocket.send("HTTP/1.1 200 OK\r\n\r\n" +
-                            "<html><body>ERROR: Necesitas poner un numero para continuar </body></html>" +
-                            "\r\n")
-                continue
+            else :
+                    if (primero == True) :
+                    resul = int (numero)
+                    sumar = 'Otro numero'
+                    primero = False
 
-        if primero == 'none':
-            primero = num
-            prim = int(primero)
-            print ("Answering back :")
-            recvSocket.send("HTTP/1.1 200 OK\r\n\r\n" +
-                                    "<html><body> Recibido el primer sumando</body></html>" +
-                                    "\r\n")
+                else :
+                    resul = self.sum(resul,int (numero))
+                    primero = True
+                    suma_total = "La suma es " + str(resul)
 
-        else :
-            ans = num + prim
-            print ("Answering back :")
-            recvSocket.send("HTTP/1.1 200 OK\r\n\r\n" +
-                                    "<html><body>" +
-                                    "<p>La suma es :  " +
-                                     str(num) + "+" + str(prim) + "=" + str(ans) +
-                                    "</p>" +
-                                    "</html></body>" +
-                                    "\r\n")
-            print ans
-        #primero = 'none'
+                    print ("Answering back :")
+                    recvSocket.send("HTTP/1.1 200 OK\r\n\r\n" +
+                                            "<html><body>" +
+                                            "<p>La suma es :  " +
+                                              suma_total +
+                                            "</p>" +
+                                            "</html></body>" +
+                                            "\r\n")
 
-        recvSocket.close()
+                    recvSocket.close()
 
-except KeyboardInterrupt:
+
+
+"""
+ except KeyboardInterrupt:
     print "Closing binded socket"
     mySocket.close()
 """
