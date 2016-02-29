@@ -4,16 +4,28 @@
 # let's use one above 1024
 import socket
 
+class Server:
+    def parse(self,request):
+        return None
 
-mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    def process (self , parsedRequest):
+        """Parse the received request, extracting the relevant information
+        and the HTML page"""
+
+        return (""HTTP/1.1 200 OK", "<html><body><h1>It works!</h1></body></html>")
+
+    def __init (self,hostname,port):
+        """Initialize the application"""
+
+ mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Let the port be reused if no process is actually using it
 mySocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 # Bind to the address corresponding to the main name of the host
-mySocket.bind(('localhost', 1234)) #ligar a IP y puerto
+mySocket.bind((hostname, port)) #ligar a IP y puerto
 
 # Queue a maximum of 5 TCP connection requests
-
 mySocket.listen(5)
+
 primero = 'none'
 try:
     while True:
@@ -21,6 +33,14 @@ try:
         (recvSocket, address) = mySocket.accept()
         print 'Request received:'
         peticion = recvSocket.recv(1234)
+        print peticion
+        parsedRequest = self.parse(peticion)
+        (returnCode,htmlAnswer) = self.process.(parsedRequest)
+        numero = self.analyze(peticion)
+            if (number == ''):
+                return None
+            else (primero==True):
+                 
         try :
             print 'La peticion es : ' + peticion
             numero = peticion.split()[1][1:]
@@ -60,3 +80,4 @@ try:
 except KeyboardInterrupt:
     print "Closing binded socket"
     mySocket.close()
+"""
