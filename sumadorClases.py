@@ -133,6 +133,36 @@ class sumApp(webApp): #heredo de webApp
             """Ejecuta primero el init del padre"""
             super(sumApp ,self).__init__(hostname,port) #python3
             #webApp.__init__(hostname , port )
+class divApp(sumaApp):
+    def process (self , parsedRequest):
+        numero,valido = parsedRequest #parsedRequest es una tupla
+        if not valido :
+            return ("HTTP/1.1 200 OK" , "<html><body><h1>Dame numeros</h1></body></html>")
+        if self.primero:
+            self.guardado = numero #para que quede guaradado el "guardado"
+            self.primero = False
+            return ("HTTP/1.1 200 OK" , "<html><body><h1>Dame otro numero</h1></body></html>
+        else :
+            try:
+                resultado = self.guardado /numero
+                self.primero = True
+                return ("HTTP/1.1 200 OK" , "<html><body><h1>Resultado : " + str(resultado) + "</h1></body></html>")
+            except ZeroDivisionError:
+                return ("HTTP/1.1 200 OK" , "<html><body><h1>No puedo dividir entre cero</h1></body></html>")
+
+class URLAleatoria(webApp):
+    """Generador de URL aleatorias
+    En el process hago la operacion en si es , en el parse guardaria lo que me piden"""
+
+    """def parse (self,request)
+        self.url = str (random.randint(1,100000))
+        return url"""
+
+    def process(self , parsedRequest) :
+        import random
+        url = str (random.randint(1,100000))
+        return ("200 OK" , '<html><body><a href ="'+ url + '"> Dame otra</a>)
+
 
 if __name__ == "__main__" :
     testWebApp = sumApp ("localhost" , 1234)
